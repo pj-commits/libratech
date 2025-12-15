@@ -17,8 +17,8 @@ class DatabaseSeeder extends Seeder
             UsersTableSeeder::class,
             BooksTableSeeder::class,
             FilesTableSeeder::class,
+            BorrowRequestsTableSeeder::class,
             BorrowLogsTableSeeder::class,
-            BorrowRequestsTableSeeder::class
         ]);
     }
 }

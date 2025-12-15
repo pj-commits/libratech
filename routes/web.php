@@ -4,7 +4,7 @@ use Inertia\Inertia;
 use Laravel\Fortify\Features;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\BookController;
+use App\Http\Controllers\LibraryController;
 
 Route::get('/', function () {
     if (Auth::check()) {
@@ -24,16 +24,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         // Librarian only (CRUD)
     Route::middleware(['can:manage-books'])->group(function () {
-        Route::get('/library/create', [BookController::class, 'create'])->name('library.create');
-        Route::post('/library', [BookController::class, 'store'])->name('library.store');
-        Route::get('/library/{book}/edit', [BookController::class, 'edit'])->name('library.edit');
-        Route::put('/library/{book}', [BookController::class, 'update'])->name('library.update');
-        Route::delete('/library/{book}', [BookController::class, 'destroy'])->name('library.destroy');
+        Route::get('/library/create', [LibraryController::class, 'create'])->name('library.create');
+        Route::post('/library', [LibraryController::class, 'store'])->name('library.store');
+        Route::get('/library/{book}/edit', [LibraryController::class, 'edit'])->name('library.edit');
+        Route::put('/library/{book}', [LibraryController::class, 'update'])->name('library.update');
+        Route::delete('/library/{book}', [LibraryController::class, 'destroy'])->name('library.destroy');
     });
 
     // Library (all users)
-    Route::get('/library', [BookController::class, 'index'])->name('library.index');
-    Route::get('/library/{book}', [BookController::class, 'show'])->name('library.show');
+    Route::get('/library', [LibraryController::class, 'index'])->name('library.index');
+    Route::get('/library/{book}', [LibraryController::class, 'show'])->name('library.show');
 
 
 

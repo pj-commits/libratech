@@ -6,17 +6,17 @@ use App\Models\Book;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 
-class BookController extends Controller
+class LibraryController extends Controller
 {
     public function index()
     {
-        $books = Book::all(); // for simplicity
-        return Inertia::render('Library/Index', compact('books'));
+        $books = Book::all();
+        return Inertia::render('Library/LibrayIndex', compact('books'));
     }
 
     public function create()
     {
-        return Inertia::render('Library/Create');
+        return Inertia::render('Library/LibraryCreate');
     }
 
     public function store(Request $request)
@@ -43,7 +43,7 @@ class BookController extends Controller
 
     public function edit(Book $book)
     {
-        return Inertia::render('Library/Edit', compact('book'));
+        return Inertia::render('Library/LibraryEdit', compact('book'));
     }
 
     public function update(Request $request, Book $book)
@@ -65,7 +65,7 @@ class BookController extends Controller
 
     public function show(Book $book)
     {
-        return Inertia::render('Library/Show', [
+        return Inertia::render('Library/LibraryDetails', [
             'book' => $book,
         ]);
     }

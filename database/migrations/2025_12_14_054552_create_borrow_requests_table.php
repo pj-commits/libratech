@@ -13,11 +13,23 @@ return new class extends Migration
     {
         Schema::create('borrow_requests', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('borrow_log_id')->constrained('borrow_logs')->onDelete('cascade');
-            $table->enum('borrow_status', ['pending','approved','rejected'])->default('pending');
-            $table->foreignId('approved_by')->nullable()->constrained('users')->onDelete('set null'); // librarian
+
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('book_id')->constrained()->cascadeOnDelete();
+
+            $table->enum('borrow_status', ['pending', 'approved', 'rejected'])
+                ->default('pending');
+
+            $table->date('expected_return_date');
+
+            $table->foreignId('approved_by')
+                ->nullable()
+                ->constrained('users')
+                ->nullOnDelete();
+
             $table->timestamps();
         });
+
     }
 
     /**
