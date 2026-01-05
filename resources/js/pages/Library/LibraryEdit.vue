@@ -1,5 +1,15 @@
 <script setup lang="ts">
 import { Button } from '@/components/ui/button'
+import {
+    Card,
+    CardContent,
+    CardDescription,
+    CardFooter,
+    CardHeader,
+    CardTitle,
+} from '@/components/ui/card';
+import { Textarea } from '@/components/ui/textarea'
+import { Pencil, Trash } from 'lucide-vue-next';
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Spinner } from '@/components/ui/spinner'
@@ -22,7 +32,6 @@ const props = defineProps<{
     description?: string
     grade_level: number
     competency?: string
-    type: string
     file_path?: string
   }
 }>()
@@ -54,6 +63,24 @@ const submit = async () => {
   })
 }
 
+const handleDelete = async () => {
+  const ok = await confirm({
+    title: 'Delete Book?',
+    description: 'This will permanently remove the book.',
+    confirmText: 'Delete',
+    variant: 'destructive',
+  })
+
+  if (!ok) return
+
+  router.delete(libraryRoutes.destroy(props.book.id), {
+        onSuccess: () => {
+             toast.success('Book deleted successfully');
+             // Inertia should automatically redirect if controller returns redirect
+        }
+  })
+}
+
 const breadcrumbs: BreadcrumbItem[] = [
   { title: 'Library', href: libraryRoutes.index().url },
   { title: 'Edit Book', href: libraryRoutes.edit(props.book.id).url },
@@ -64,79 +91,84 @@ const breadcrumbs: BreadcrumbItem[] = [
   <Head title="Edit Book" />
 
   <AppLayout :breadcrumbs="breadcrumbs">
-    <div class="space-y-4 p-6">
-      <h2 class="text-center text-xl font-bold">Edit Book</h2>
+    <div class="px-4 py-6 md:px-8">
+      <Card class="shadow-lg">
+        <CardHeader>
+          <CardTitle class="text-2xl font-bold flex items-center gap-2">
+             <span class="bg-orange-100 text-orange-600 p-2 rounded-lg"><Pencil class="w-6 h-6" /></span>
+            Edit Book
+          </CardTitle>
+          <CardDescription>Update the book details below.</CardDescription>
+        </CardHeader>
+        <CardContent class="space-y-6">
+           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+             <!-- Title -->
+            <div class="md:col-span-2">
+                <Label class="text-base font-semibold" for="title">Book Title</Label>
+                <Input v-model="form.title" id="title" class="mt-2" placeholder="e.g. Introduction to Physics" />
+                <div class="text-sm text-red-600 mt-1">{{ errors.title }}</div>
+            </div>
 
-      <div class="mx-auto grid max-w-lg gap-4">
-        <div>
-          <Label class="mb-2" for="title">Title</Label>
-          <Input v-model="form.title" id="title" />
-          <div class="text-sm text-red-600">{{ errors.title }}</div>
-        </div>
+            <!-- Author -->
+            <div>
+                <Label class="text-base font-semibold" for="author">Author</Label>
+                <Input v-model="form.author" id="author" class="mt-2" placeholder="e.g. John Doe" />
+                <div class="text-sm text-red-600 mt-1">{{ errors.author }}</div>
+            </div>
 
-        <div>
-          <Label class="mb-2" for="author">Author</Label>
-          <Input v-model="form.author" id="author" />
-          <div class="text-sm text-red-600">{{ errors.author }}</div>
-        </div>
+            <!-- Subject -->
+            <div>
+                <Label class="text-base font-semibold" for="subject">Subject</Label>
+                <Input v-model="form.subject" id="subject" class="mt-2" placeholder="e.g. Science" />
+                <div class="text-sm text-red-600 mt-1">{{ errors.subject }}</div>
+            </div>
 
-        <div>
-          <Label class="mb-2" for="subject">Book Subject</Label>
-          <Input v-model="form.subject" id="subject" />
-          <div class="text-sm text-red-600">{{ errors.subject }}</div>
-        </div>
+             <!-- Grade Level -->
+            <div>
+                <Label class="text-base font-semibold" for="grade_level">Grade Level</Label>
+                 <select
+                    v-model="form.grade_level"
+                    id="grade_level"
+                   class="w-full mt-2 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                >
+                    <option v-for="n in 6" :key="n" :value="n + 6">
+                    Grade {{ n + 6 }}
+                    </option>
+                </select>
+                <div class="text-sm text-red-600 mt-1">{{ errors.grade_level }}</div>
+            </div>
 
-        <div>
-          <Label class="mb-2" for="description">Description</Label>
-          <Input v-model="form.description" id="description" />
-          <div class="text-sm text-red-600">{{ errors.description }}</div>
-        </div>
+            <!-- Competency -->
+            <div>
+                <Label class="text-base font-semibold" for="competency">Competency</Label>
+                <Input v-model="form.competency" id="competency" class="mt-2" />
+                <div class="text-sm text-red-600 mt-1">{{ errors.competency }}</div>
+            </div>
 
-        <div>
-          <Label class="mb-2" for="grade_level">Grade Level</Label>
-          <select
-            v-model="form.grade_level"
-            id="grade_level"
-            class="rounded border px-2 py-1"
-          >
-            <option v-for="n in 6" :key="n" :value="n + 6">
-              Grade {{ n + 6 }}
-            </option>
-          </select>
-          <div class="text-sm text-red-600">{{ errors.grade_level }}</div>
-        </div>
+             <!-- Description -->
+            <div class="md:col-span-2">
+                <Label class="text-base font-semibold" for="description">Description</Label>
+                <Textarea v-model="form.description" id="description" class="mt-2 min-h-[100px]" />
+                <div class="text-sm text-red-600 mt-1">{{ errors.description }}</div>
+            </div>
+          </div>
+        </CardContent>
+        <CardFooter class="flex justify-between items-center bg-muted/20 py-4 px-6 rounded-b-lg">
+             <Button variant="outline" class="text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700 cursor-pointer" @click="handleDelete">
+                <Trash class="w-4 h-4 mr-2" />
+                Delete Book
+              </Button>
+            <div class="flex gap-3">
+                 <Button variant="outline" @click="router.visit(libraryRoutes.index().url)">Cancel</Button>
+                <Button @click="submit" :disabled="form.processing" class="cursor-pointer bg-orange-500 hover:bg-orange-600 text-white">
+                    <Spinner v-if="form.processing" class="mr-2" />
+                    Save Changes
+                </Button>
+            </div>
+        </CardFooter>
+      </Card>
 
-        <div>
-          <Label class="mb-2" for="competency">Competency</Label>
-          <Input v-model="form.competency" id="competency" />
-          <div class="text-sm text-red-600">{{ errors.competency }}</div>
-        </div>
-
-        <div>
-          <Label class="mb-2" for="type">Type</Label>
-          <select
-            v-model="form.type"
-            id="type"
-            class="rounded border px-2 py-1"
-          >
-            <option value="pdf">PDF</option>
-            <option value="link">Link</option>
-            <option value="physical">Physical</option>
-          </select>
-          <div class="text-sm text-red-600">{{ errors.type }}</div>
-        </div>
-
-        <div>
-          <Label class="mb-2" for="file_path">File Path</Label>
-          <Input v-model="form.file_path" id="file_path" />
-          <div class="text-sm text-red-600">{{ errors.file_path }}</div>
-        </div>
-
-        <Button class="mt-4" @click="submit">
-          <Spinner v-if="false" />
-          Save Changes
-        </Button>
-      </div>
+       <!-- Delete button moved to footer -->
     </div>
   </AppLayout>
 </template>

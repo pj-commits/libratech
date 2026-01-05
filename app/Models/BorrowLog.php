@@ -10,21 +10,17 @@ class BorrowLog extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id', 'book_id', 'borrowed_at', 'returned_at'
+        'user_id',
+        'book_id',
+        'borrowed_at',
+        'returned_at',
     ];
 
-    public function user()
-    {
+    public function user() {
         return $this->belongsTo(User::class);
     }
 
-    public function book()
-    {
+    public function book() {
         return $this->belongsTo(Book::class);
-    }
-
-    public function request()
-    {
-        return $this->hasOne(BorrowRequest::class);
     }
 }

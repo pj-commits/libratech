@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('book_id')->constrained()->cascadeOnDelete();
 
-            $table->enum('borrow_status', ['pending', 'approved', 'rejected'])
+            $table->enum('borrow_status', ['pending', 'approved', 'rejected', 'returned'])
                 ->default('pending');
 
             $table->date('expected_return_date');
@@ -26,6 +26,8 @@ return new class extends Migration
                 ->nullable()
                 ->constrained('users')
                 ->nullOnDelete();
+
+            $table->text('reject_reason')->nullable();
 
             $table->timestamps();
         });

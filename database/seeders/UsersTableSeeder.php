@@ -11,26 +11,51 @@ class UsersTableSeeder extends Seeder
 {
     public function run(): void
     {
-        $users = [
-            // Librarian
-            ['Admin Librarian','librarian@school.com','librarian',null],
-            // Teachers
-            ['Teacher One','teacher1@school.com','teacher',null],
-            ['Teacher Two','teacher2@school.com','teacher',null],
-            // Students
-            ['Student One','student1@school.com','student',7],
-            ['Student Two','student2@school.com','student',8],
-            ['Student Three','student3@school.com','student',10],
-            ['Student Four','student4@school.com','student',12],
+        $password = Hash::make('12345678');
+
+        // 1. Librarian
+        User::create([
+            'name' => 'Erwin Smith',
+            'email' => 'erwin.smith@librarian.libratech.com',
+            'password' => $password,
+            'role' => 'librarian',
+            'grade_level' => null
+        ]);
+
+        // 2. Teachers
+        $teachers = [
+            ['Levi Ackerman', 'levi.ackerman@teacher.libratech.com'],
+            ['Hange Zoe', 'hange.zoe@teacher.libratech.com'],
+            ['Dot Pyxis', 'dot.pyxis@teacher.libratech.com'],
         ];
 
-        foreach ($users as $user) {
+        foreach ($teachers as $t) {
             User::create([
-                'name' => $user[0],
-                'email' => $user[1],
-                'password' => Hash::make('12345678'), // all passwords same
-                'role' => $user[2],
-                'grade_level' => $user[3]
+                'name' => $t[0],
+                'email' => $t[1],
+                'password' => $password,
+                'role' => 'teacher',
+                'grade_level' => null
+            ]);
+        }
+
+        // 3. Students
+        $students = [
+            ['Eren Yeager', 'eren.yeager@student.libratech.com', 7],
+            ['Mikasa Ackerman', 'mikasa.ackerman@student.libratech.com', 8],
+            ['Armin Arlert', 'armin.arlert@student.libratech.com', 9],
+            ['Jean Kirstein', 'jean.kirstein@student.libratech.com', 10],
+            ['Maria Leonora Teresa Cruz', 'marialt.cruz@student.libratech.com', 11], // Case 1
+            ['Maria Teresa Cruz', 'maria.t.cruz@student.libratech.com', 12], // Case 2
+        ];
+
+        foreach ($students as $s) {
+            User::create([
+                'name' => $s[0],
+                'email' => $s[1],
+                'password' => $password,
+                'role' => 'student',
+                'grade_level' => $s[2]
             ]);
         }
     }

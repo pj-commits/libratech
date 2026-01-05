@@ -41,6 +41,7 @@ export interface User {
 interface PagePropsWithFlash extends AppPageProps {
     flash?: {
         message?: string;
+        error?: string;
     };
 }
 

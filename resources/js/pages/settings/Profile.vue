@@ -122,7 +122,7 @@ const user = page.props.auth.user;
                 </Form>
             </div>
 
-            <DeleteUser />
+            <!-- <DeleteUser /> -> Only Admin can delete users now -->
         </SettingsLayout>
     </AppLayout>
 </template>

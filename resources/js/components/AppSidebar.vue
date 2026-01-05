@@ -13,7 +13,7 @@ import {
 import { dashboard } from '@/routes';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/vue3';
-import { BookOpen, Folder, LayoutGrid } from 'lucide-vue-next';
+import { BookOpen, Folder, LayoutGrid, FileText, Inbox, Bookmark, Users, Activity } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
 import { usePage } from '@inertiajs/vue3';
 
@@ -30,15 +30,32 @@ if (['student','teacher','librarian'].includes(userRole)) {
     mainNavItems.push({ title: 'Library', href: '/library', icon: BookOpen });
 }
 
-// Learning Files
-if (['student','teacher','librarian'].includes(userRole)) {
-    mainNavItems.push({ title: 'Learning Files', href: '/files', icon: Folder });
+// My Requests
+if (['student','teacher'].includes(userRole)) {
+     mainNavItems.push({ title: 'My Requests', href: '/my-requests', icon: FileText });
 }
 
-// Manage (only librarian)
+// Manage Requests / Active Borrows (Librarian)
 if (userRole === 'librarian') {
-    mainNavItems.push({ title: 'Manage', href: '/manage', icon: Folder });
+    mainNavItems.push({ title: 'Manage Requests', href: '/manage-requests', icon: Inbox });
+    mainNavItems.push({ title: 'Active Borrows', href: '/admin/active-borrows', icon: Activity });
 }
+
+// My Books (Student/Teacher only)
+if (['student','teacher'].includes(userRole)) {
+     mainNavItems.push({ title: 'My Books', href: '/my-books', icon: Bookmark });
+}
+
+// Learning Files
+if (['student','teacher','librarian'].includes(userRole)) {
+    mainNavItems.push({ title: 'Learning Files', href: '/learning-files', icon: Folder });
+}
+
+// User Management (Librarian/Admin only)
+if (userRole === 'librarian') {
+    mainNavItems.push({ title: 'Manage Users', href: '/users', icon: Users });
+}
+
 
 </script>
 

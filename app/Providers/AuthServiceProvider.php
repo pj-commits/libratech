@@ -30,5 +30,12 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('return-book', fn($user) => $user->role === 'librarian');
 
         Gate::define('manage-books', fn($user) => $user->role === 'librarian');
+
+        Gate::define('borrow-books', fn ($user) => in_array($user->role, ['student', 'teacher']));
+        Gate::define('manage-borrows', fn ($user) => $user->role === 'librarian');
+
+        // Learning Files
+        Gate::define('upload-files', fn($user) => in_array($user->role, ['teacher', 'librarian']));
+        Gate::define('delete-learning-files', fn($user) => $user->role === 'librarian');
     }
 }

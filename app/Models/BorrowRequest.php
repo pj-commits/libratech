@@ -10,16 +10,23 @@ class BorrowRequest extends Model
     use HasFactory;
 
     protected $fillable = [
-        'borrow_log_id', 'borrow_status', 'approved_by'
+        'user_id',
+        'book_id',
+        'borrow_status',
+        'expected_return_date',
+        'approved_by',
+        'reject_reason',
     ];
 
-    public function borrowLog()
-    {
-        return $this->belongsTo(BorrowLog::class);
+    public function user() {
+        return $this->belongsTo(User::class);
     }
 
-    public function approver()
-    {
+    public function book() {
+        return $this->belongsTo(Book::class);
+    }
+
+    public function approver() {
         return $this->belongsTo(User::class, 'approved_by');
     }
 }

@@ -9,6 +9,14 @@ import { Spinner } from '@/components/ui/spinner';
 import InputError from '@/components/InputError.vue';
 import TextLink from '@/components/TextLink.vue';
 import { useForm } from '@inertiajs/vue3';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from '@/components/ui/dialog';
 
 const props = defineProps<{
   status?: string;
@@ -46,21 +54,55 @@ const submit = () => {
       <div class="grid gap-6">
         <div class="grid gap-2">
           <Label for="email">Email address</Label>
-          <Input id="email" type="email" v-model="form.email" required autofocus placeholder="email@example.com" />
+          <Input 
+            id="email" 
+            name="email" 
+            type="email" 
+            v-model="form.email" 
+            required 
+            autofocus 
+            autocomplete="email" 
+            placeholder="email@libratech.com" 
+           />
           <InputError :message="form.errors.email" />
         </div>
 
         <div class="grid gap-2">
           <div class="flex items-center justify-between">
             <Label for="password">Password</Label>
-            <TextLink v-if="props.canResetPassword" href="/forgot-password" class="text-sm">Forgot password?</TextLink>
+            
+            <Dialog>
+                <DialogTrigger as-child>
+                    <button type="button" class="text-sm font-medium text-muted-foreground hover:text-primary hover:underline cursor-pointer">
+                        Forgot password?
+                    </button>
+                </DialogTrigger>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Reset Password</DialogTitle>
+                        <DialogDescription>
+                            To reset your password, please contact the <strong>Librarian</strong> or a <strong>Teacher</strong>.
+                            <br><br>
+                            They can update your credentials via the User Management dashboard.
+                        </DialogDescription>
+                    </DialogHeader>
+                </DialogContent>
+            </Dialog>
           </div>
-          <Input id="password" type="password" v-model="form.password" required placeholder="Password" />
+          <Input 
+            id="password" 
+            name="password" 
+            type="password" 
+            v-model="form.password" 
+            required 
+            autocomplete="current-password" 
+            placeholder="Password" 
+           />
           <InputError :message="form.errors.password" />
         </div>
 
         <div class="flex items-center space-x-2">
-          <Checkbox id="remember" v-model="form.remember" />
+          <Checkbox id="remember" v-model:checked="form.remember" />
           <Label for="remember">Remember me</Label>
         </div>
 
@@ -70,9 +112,25 @@ const submit = () => {
         </Button>
       </div>
 
-      <div v-if="props.canRegister" class="text-center text-sm text-muted-foreground">
+      <div class="text-center text-sm text-muted-foreground">
         Don't have an account?
-        <TextLink href="/register">Sign up</TextLink>
+        <Dialog>
+            <DialogTrigger as-child>
+                <button type="button" class="font-medium text-muted-foreground hover:text-primary hover:underline ml-1 cursor-pointer">
+                    Sign up
+                </button>
+            </DialogTrigger>
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle>Create Account</DialogTitle>
+                    <DialogDescription>
+                        Registration is managed by the school administration.
+                        <br><br>
+                        Please visit the <strong>Library</strong> or ask your <strong>Teacher</strong> to create an account for you.
+                    </DialogDescription>
+                </DialogHeader>
+            </DialogContent>
+        </Dialog>
       </div>
     </form>
   </AuthBase>
