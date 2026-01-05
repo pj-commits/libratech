@@ -143,7 +143,12 @@ const formatStatLabel = (key: string) => {
                                 <div class="space-y-1">
                                     <p class="text-sm font-medium leading-none">
                                         <span v-if="props.role === 'librarian'">
-                                            User <strong>{{ item.user }}</strong> {{ item.status }} <strong>{{ item.book }}</strong>
+                                            <span v-if="item.status === 'pending'">
+                                                <strong>{{ item.user }}</strong> requested <strong>{{ item.book }}</strong>
+                                            </span>
+                                            <span v-else>
+                                                Request for <strong>{{ item.book }}</strong> by <strong>{{ item.user }}</strong> was {{ item.status }}
+                                            </span>
                                         </span>
                                         <span v-else-if="props.role === 'teacher'">
                                             <span v-if="item.type === 'upload'">
