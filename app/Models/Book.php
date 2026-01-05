@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class Book extends Model
 {
@@ -18,7 +18,7 @@ class Book extends Model
         'competency',
         'type',
         'file_path',
-        'book_code'
+        'book_code',
     ];
 
     public function borrowLogs()
@@ -41,7 +41,7 @@ class Book extends Model
             : 1;
 
         return $gradePart
-            . $subjectPart
-            . str_pad($next, 5, '0');
+            .$subjectPart
+            .str_pad($next, 5, '0');
     }
 }

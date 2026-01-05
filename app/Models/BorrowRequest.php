@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class BorrowRequest extends Model
 {
@@ -18,15 +18,18 @@ class BorrowRequest extends Model
         'reject_reason',
     ];
 
-    public function user() {
+    public function user()
+    {
         return $this->belongsTo(User::class);
     }
 
-    public function book() {
+    public function book()
+    {
         return $this->belongsTo(Book::class);
     }
 
-    public function approver() {
+    public function approver()
+    {
         return $this->belongsTo(User::class, 'approved_by');
     }
 }

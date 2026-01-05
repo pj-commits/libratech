@@ -24,7 +24,7 @@ class BookFactory extends Factory
             'grade_level' => $this->faker->numberBetween(1, 12),
             'subject' => $this->faker->word(),
             'competency' => $this->faker->sentence(),
-            'type' => $this->faker->randomElement(['Fiction', 'Non-fiction', 'Reference']),
+            'type' => $this->faker->randomElement(['pdf', 'link', 'physical']),
             'file_path' => null,
         ];
     }

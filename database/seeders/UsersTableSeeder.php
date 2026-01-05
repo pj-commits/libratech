@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class UsersTableSeeder extends Seeder
 {
@@ -19,7 +18,7 @@ class UsersTableSeeder extends Seeder
             'email' => 'erwin.smith@librarian.libratech.com',
             'password' => $password,
             'role' => 'librarian',
-            'grade_level' => null
+            'grade_level' => null,
         ]);
 
         // 2. Teachers
@@ -35,7 +34,7 @@ class UsersTableSeeder extends Seeder
                 'email' => $t[1],
                 'password' => $password,
                 'role' => 'teacher',
-                'grade_level' => null
+                'grade_level' => null,
             ]);
         }
 
@@ -55,7 +54,7 @@ class UsersTableSeeder extends Seeder
                 'email' => $s[1],
                 'password' => $password,
                 'role' => 'student',
-                'grade_level' => $s[2]
+                'grade_level' => $s[2],
             ]);
         }
     }

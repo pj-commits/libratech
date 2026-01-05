@@ -1,11 +1,11 @@
 <?php
 
-use Inertia\Inertia;
-use Laravel\Fortify\Features;
+use App\Http\Controllers\BorrowRequestController;
+use App\Http\Controllers\LibraryController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\LibraryController;
-use App\Http\Controllers\BorrowRequestController;
+use Inertia\Inertia;
+use Laravel\Fortify\Features;
 
 Route::get('/', function () {
     if (Auth::check()) {
@@ -23,7 +23,7 @@ Route::get('/dashboard', [\App\Http\Controllers\DashboardController::class, 'ind
 
 Route::middleware(['auth', 'verified'])->group(function () {
 
-        // Librarian only (CRUD)
+    // Librarian only (CRUD)
     Route::middleware(['can:manage-books'])->group(function () {
         Route::get('/library/create', [LibraryController::class, 'create'])->name('library.create');
         Route::post('/library', [LibraryController::class, 'store'])->name('library.store');
@@ -50,7 +50,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/library/{book}/borrow', [BorrowRequestController::class, 'store'])->name('library.borrow');
     Route::post('/borrow-requests/{borrowRequest}/approve', [BorrowRequestController::class, 'approve'])->name('borrow-requests.approve')->middleware('can:manage-borrows');
     Route::post('/borrow-requests/{borrowRequest}/reject', [BorrowRequestController::class, 'reject'])->name('borrow-requests.reject')->middleware('can:manage-borrows');
-    Route::post('/library/{book}/return',[BorrowRequestController::class, 'return'])->name('library.return');
+    Route::post('/library/{book}/return', [BorrowRequestController::class, 'return'])->name('library.return');
     Route::delete('/borrow-requests/{borrowRequest}/cancel', [BorrowRequestController::class, 'cancel'])->name('borrow-requests.cancel');
 
     // My Requests
@@ -71,7 +71,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/manage-requests', [BorrowRequestController::class, 'manageRequests'])
         ->middleware('can:manage-borrows')
         ->name('manage-requests');
-    
+
     // Active Borrows (Librarian)
     Route::get('/admin/active-borrows', [BorrowRequestController::class, 'activeBorrows'])
         ->middleware('can:manage-borrows')
@@ -80,7 +80,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Learning Files
     Route::get('/learning-files', [App\Http\Controllers\LearningFileController::class, 'index'])->name('learning-files.index');
     Route::get('/learning-files/{learningFile}/download', [App\Http\Controllers\LearningFileController::class, 'download'])->name('learning-files.download');
-    
+
     Route::middleware(['can:upload-files'])->group(function () {
         Route::get('/learning-files/create', [App\Http\Controllers\LearningFileController::class, 'create'])->name('learning-files.create');
         Route::post('/learning-files', [App\Http\Controllers\LearningFileController::class, 'store'])->name('learning-files.store');
@@ -91,15 +91,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 });
 
-    // CSV Template Download
-    Route::get('/downloads/template/{type}', function ($type) {
-        $path = match($type) {
-            'books' => public_path('templates/books_template.csv'),
-            'users' => public_path('templates/users_template.csv'),
-            default => abort(404),
-        };
-        return response()->download($path);
-    })->name('downloads.template');
+// CSV Template Download
+Route::get('/downloads/template/{type}', function ($type) {
+    $path = match ($type) {
+        'books' => public_path('templates/books_template.csv'),
+        'users' => public_path('templates/users_template.csv'),
+        default => abort(404),
+    };
 
+    return response()->download($path);
+})->name('downloads.template');
 
 require __DIR__.'/settings.php';

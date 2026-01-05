@@ -55,7 +55,7 @@ class BorrowRequestInteractionTest extends TestCase
         $librarian = User::factory()->create(['role' => 'librarian']);
         $student = User::factory()->create(['role' => 'student']);
         $book = Book::factory()->create();
-        
+
         $request = BorrowRequest::create([
             'user_id' => $student->id,
             'book_id' => $book->id,
@@ -72,7 +72,7 @@ class BorrowRequestInteractionTest extends TestCase
             'borrow_status' => 'approved',
             'approved_by' => $librarian->id,
         ]);
-        
+
         // Also check that a BorrowLog was created (as per controller logic)
         $this->assertDatabaseHas('borrow_logs', [
             'user_id' => $student->id,
@@ -85,7 +85,7 @@ class BorrowRequestInteractionTest extends TestCase
         $librarian = User::factory()->create(['role' => 'librarian']);
         $student = User::factory()->create(['role' => 'student']);
         $book = Book::factory()->create();
-        
+
         $request = BorrowRequest::create([
             'user_id' => $student->id,
             'book_id' => $book->id,

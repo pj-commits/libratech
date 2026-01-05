@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class BorrowLog extends Model
 {
@@ -16,11 +16,13 @@ class BorrowLog extends Model
         'returned_at',
     ];
 
-    public function user() {
+    public function user()
+    {
         return $this->belongsTo(User::class);
     }
 
-    public function book() {
+    public function book()
+    {
         return $this->belongsTo(Book::class);
     }
 }

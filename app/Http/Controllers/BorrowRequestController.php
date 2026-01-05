@@ -1,15 +1,14 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\Book;
-use Illuminate\Routing\Controller as BaseController;
-
 use App\Models\BorrowLog;
-use Illuminate\Http\Request;
 use App\Models\BorrowRequest;
-use Illuminate\Support\Facades\Auth;
-
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Http\Request;
+use Illuminate\Routing\Controller as BaseController;
+use Illuminate\Support\Facades\Auth;
 
 class BorrowRequestController extends BaseController
 {
@@ -49,7 +48,7 @@ class BorrowRequestController extends BaseController
         if ($borrowRequest->user_id !== Auth::id()) {
             abort(403);
         }
-        
+
         if ($borrowRequest->borrow_status !== 'pending') {
             return back()->with('error', 'Cannot cancel non-pending request');
         }
@@ -62,13 +61,13 @@ class BorrowRequestController extends BaseController
     // Logic to prevent duplicate requests
     public function checkBorrowStatus(Book $book)
     {
-         $existing = BorrowRequest::where('user_id', Auth::id())
+        $existing = BorrowRequest::where('user_id', Auth::id())
             ->where('book_id', $book->id)
             ->whereIn('borrow_status', ['pending', 'approved'])
             ->first();
 
         return response()->json([
-            'status' => $existing ? $existing->borrow_status : null
+            'status' => $existing ? $existing->borrow_status : null,
         ]);
     }
 
@@ -90,8 +89,6 @@ class BorrowRequestController extends BaseController
 
         return back()->with('message', 'Borrow approved');
     }
-
-
 
     // Librarian: reject
     public function reject(BorrowRequest $borrowRequest)
@@ -152,7 +149,7 @@ class BorrowRequestController extends BaseController
             ->get();
 
         return inertia('Requests/MyRequests', [
-            'requests' => $requests
+            'requests' => $requests,
         ]);
     }
 
@@ -166,7 +163,7 @@ class BorrowRequestController extends BaseController
             ->get();
 
         return inertia('Requests/MyBooks', [
-            'books' => $myBooks
+            'books' => $myBooks,
         ]);
     }
 
@@ -180,9 +177,10 @@ class BorrowRequestController extends BaseController
             ->get();
 
         return inertia('Requests/ManageRequests', [
-            'requests' => $requests
+            'requests' => $requests,
         ]);
     }
+
     public function activeBorrows(Request $request)
     {
         $this->authorize('manage-borrows');
@@ -191,43 +189,45 @@ class BorrowRequestController extends BaseController
         // Query BorrowLog joined with approved BorrowRequest
         $query = \App\Models\BorrowLog::with(['user', 'book'])
             ->select('borrow_logs.*', 'borrow_requests.expected_return_date')
-            ->leftJoin('borrow_requests', function($join) {
+            ->leftJoin('borrow_requests', function ($join) {
                 $join->on('borrow_logs.user_id', '=', 'borrow_requests.user_id')
-                     ->on('borrow_logs.book_id', '=', 'borrow_requests.book_id')
-                     ->where('borrow_requests.borrow_status', 'approved');
+                    ->on('borrow_logs.book_id', '=', 'borrow_requests.book_id')
+                    ->where('borrow_requests.borrow_status', 'approved');
             })
             ->whereNull('borrow_logs.returned_at');
 
         // Search
         if ($request->search) {
-             $query->where(function($q) use ($request) {
+            $query->where(function ($q) use ($request) {
                 $q->whereHas('user', function ($u) use ($request) {
-                    $u->where('name', 'like', '%' . $request->search . '%');
+                    $u->where('name', 'like', '%'.$request->search.'%');
                 })->orWhereHas('book', function ($b) use ($request) {
-                    $b->where('title', 'like', '%' . $request->search . '%');
+                    $b->where('title', 'like', '%'.$request->search.'%');
                 });
-             });
+            });
         }
-        
+
         // Filter
         if ($request->filter === 'overdue') {
-             $query->where('borrow_requests.expected_return_date', '<', now()->startOfDay());
+            $query->where('borrow_requests.expected_return_date', '<', now()->startOfDay());
         } elseif ($request->filter === 'active') {
-             $query->where('borrow_requests.expected_return_date', '>=', now()->startOfDay());
+            $query->where('borrow_requests.expected_return_date', '>=', now()->startOfDay());
         }
 
         // Sort
         $sort = $request->input('sort', 'created_at');
-        if ($sort === 'created_at') $sort = 'borrowed_at';
+        if ($sort === 'created_at') {
+            $sort = 'borrowed_at';
+        }
 
         $direction = $request->input('direction', 'desc');
 
         if ($sort === 'user') {
             $query->join('users', 'borrow_logs.user_id', '=', 'users.id')
-                  ->orderBy('users.name', $direction);
+                ->orderBy('users.name', $direction);
         } elseif ($sort === 'book') {
             $query->join('books', 'borrow_logs.book_id', '=', 'books.id')
-                  ->orderBy('books.title', $direction);
+                ->orderBy('books.title', $direction);
         } elseif ($sort === 'due_date') {
             $query->orderBy('borrow_requests.expected_return_date', $direction);
         } else {
@@ -242,6 +242,7 @@ class BorrowRequestController extends BaseController
         // Transform for Frontend
         $activeBorrows->getCollection()->transform(function ($log) {
             $log->created_at = $log->borrowed_at; // Map to expected frontend prompt
+
             return $log;
         });
 

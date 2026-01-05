@@ -36,7 +36,7 @@ class LearningFilesTableSeeder extends Seeder
                 'title' => $f[1],
                 'description' => $f[2],
                 'grade_level' => $f[3],
-                'file_path' => 'learning-files/' . $f[0], // Prefix with folder
+                'file_path' => 'learning-files/'.$f[0], // Prefix with folder
                 'teacher_id' => $f[4],
                 'created_at' => now(),
             ]);

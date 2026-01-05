@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('description', 250);
             $table->integer('grade_level');
             $table->string('competency')->nullable();
-            $table->enum('type', ['pdf','link','physical']);
+            $table->enum('type', ['pdf', 'link', 'physical']);
             $table->string('file_path')->nullable();
             $table->timestamps();
         });

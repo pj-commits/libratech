@@ -2,10 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\BorrowLog;
 use App\Models\BorrowRequest;
 use Illuminate\Database\Seeder;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class BorrowRequestsTableSeeder extends Seeder
 {
@@ -20,7 +18,7 @@ class BorrowRequestsTableSeeder extends Seeder
             [5, 2, 'pending', now()->addDays(5), null, null],  // Eren (G7) wants Earth Sci
             [8, 1, 'rejected', now()->addDays(7), 1, 'Grade level mismatch.'], // Jean (G10) rejected for Bio
             [6, 27, 'rejected', now()->addDays(7), 1, 'Prerequisites not met.'], // Mikasa (G8) rejected for Calculus
-            
+
             [9, 25, 'pending', now()->addDays(4), null, null], // Maria LT (G11) wants Creative Writing
             [10, 21, 'rejected', now()->addDays(2), 1, 'Duplicate request.'], // Maria T rejected for Phys II
         ];

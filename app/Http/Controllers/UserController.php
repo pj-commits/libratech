@@ -19,8 +19,8 @@ class UserController extends Controller
         $query = User::query();
 
         if ($request->filled('search')) {
-            $query->where('name', 'like', '%' . $request->search . '%')
-                  ->orWhere('email', 'like', '%' . $request->search . '%');
+            $query->where('name', 'like', '%'.$request->search.'%')
+                ->orWhere('email', 'like', '%'.$request->search.'%');
         }
 
         if ($request->filled('role')) {
@@ -64,7 +64,7 @@ class UserController extends Controller
             'role' => ['required', Rule::in(['student', 'teacher', 'librarian'])],
             'grade_level' => 'nullable|integer|min:1|max:12', // Basic validation
         ]);
-        
+
         // Conditional Requirement
         if ($validated['role'] === 'student' && empty($validated['grade_level'])) {
             return back()->withErrors(['grade_level' => 'Grade level is required for students.']);
@@ -86,7 +86,7 @@ class UserController extends Controller
     public function edit(User $user)
     {
         return Inertia::render('Users/UserEdit', [
-            'user' => $user
+            'user' => $user,
         ]);
     }
 
@@ -103,11 +103,11 @@ class UserController extends Controller
             'password' => 'nullable|string|min:8',
         ]);
 
-        $email = $data['email_prefix'] . '@' . $data['role'] . '.libratech.com';
+        $email = $data['email_prefix'].'@'.$data['role'].'.libratech.com';
 
         // Check uniqueness ignoring current user
         if (User::where('email', $email)->where('id', '!=', $user->id)->exists()) {
-             return back()->withErrors(['email_prefix' => 'This username is already taken.']);
+            return back()->withErrors(['email_prefix' => 'This username is already taken.']);
         }
 
         if ($data['role'] === 'student' && empty($data['grade_level'])) {
@@ -116,7 +116,7 @@ class UserController extends Controller
         if ($data['role'] !== 'student') {
             $data['grade_level'] = null;
         }
-        
+
         $updateData = [
             'name' => $data['name'],
             'email' => $email,
@@ -124,7 +124,7 @@ class UserController extends Controller
             'grade_level' => $data['grade_level'],
         ];
 
-        if (!empty($data['password'])) {
+        if (! empty($data['password'])) {
             $updateData['password'] = Hash::make($data['password']);
         }
 
@@ -159,39 +159,40 @@ class UserController extends Controller
 
         User::whereIn('id', $ids)->delete();
 
-        return redirect()->route('users.index')->with('message', count($ids) . ' users deleted successfully.');
+        return redirect()->route('users.index')->with('message', count($ids).' users deleted successfully.');
     }
+
     private function generateUniqueEmail($firstName, $middleName, $lastName, $role)
     {
         $first = strtolower(preg_replace('/[^a-z0-9]/', '', $firstName));
         $last = strtolower(preg_replace('/[^a-z0-9]/', '', $lastName));
-        
+
         $middle = strtolower(trim($middleName));
         $middleParts = array_filter(explode(' ', $middle));
-        
+
         if (empty($middleParts)) {
             // Case 3 (1 name/No middle): maria.cruz
-            $base = $first . '.' . $last;
+            $base = $first.'.'.$last;
         } elseif (count($middleParts) === 1) {
             // Case 2 (2 names/1 middle): maria.l.cruz
             $initial = substr(reset($middleParts), 0, 1);
-            $base = $first . '.' . $initial . '.' . $last;
+            $base = $first.'.'.$initial.'.'.$last;
         } else {
             // Case 1 (3+ names/Multiple middle): marialt.cruz
             $initials = '';
             foreach ($middleParts as $part) {
                 $initials .= substr($part, 0, 1);
             }
-            $base = $first . $initials . '.' . $last;
+            $base = $first.$initials.'.'.$last;
         }
 
-        $domain = '@' . $role . '.libratech.com';
-        $email = $base . $domain;
-        
+        $domain = '@'.$role.'.libratech.com';
+        $email = $base.$domain;
+
         $counter = 1;
         while (User::where('email', $email)->exists()) {
             $counter++;
-            $email = $base . $counter . $domain;
+            $email = $base.$counter.$domain;
         }
 
         return $email;
@@ -211,24 +212,26 @@ class UserController extends Controller
         // Index: 0, 1, 2, 3, 4
 
         while (($row = fgetcsv($handle)) !== false) {
-            if (count($row) < 4) continue;
+            if (count($row) < 4) {
+                continue;
+            }
 
             $firstName = trim($row[0]);
             $middleName = trim($row[1]);
             $lastName = trim($row[2]);
             $role = strtolower(trim($row[3]));
-            
+
             // Strict Validation: Required Fields
             if (empty($firstName) || empty($lastName) || empty($role)) {
                 continue; // Skip invalid row
             }
-            
+
             // Validate Role strictly
-            if (!in_array($role, ['student', 'teacher', 'librarian'])) {
+            if (! in_array($role, ['student', 'teacher', 'librarian'])) {
                 continue; // Skip invalid role
             }
             $gradeRaw = isset($row[4]) ? trim($row[4]) : null;
-            
+
             // Logic:
             $grade = null;
 
@@ -237,19 +240,23 @@ class UserController extends Controller
                 if ($gradeRaw === '' || $gradeRaw === null) {
                     $grade = 7;
                 } else {
-                    $grade = (int)$gradeRaw;
+                    $grade = (int) $gradeRaw;
                     // Ensure valid range
-                    if ($grade < 1 || $grade > 12) $grade = 7;
+                    if ($grade < 1 || $grade > 12) {
+                        $grade = 7;
+                    }
                 }
             } else {
                 // Force null for non-students (teacher, librarian)
                 $grade = null;
             }
-            
+
             // Construct Full Name
             $fullName = $firstName;
-            if ($middleName) $fullName .= ' ' . $middleName;
-            $fullName .= ' ' . $lastName;
+            if ($middleName) {
+                $fullName .= ' '.$middleName;
+            }
+            $fullName .= ' '.$lastName;
 
             // Generate Email
             $email = $this->generateUniqueEmail($firstName, $middleName, $lastName, $role);

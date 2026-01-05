@@ -35,7 +35,7 @@ class LearningFileController extends Controller
         });
 
         return Inertia::render('LearningFiles/LearningIndex', [
-            'files' => $files
+            'files' => $files,
         ]);
     }
 
@@ -47,7 +47,7 @@ class LearningFileController extends Controller
     public function store(Request $request)
     {
         $user = Auth::user();
-        
+
         // Validation
         $request->validate([
             'title' => 'required|string|max:255',
@@ -62,8 +62,8 @@ class LearningFileController extends Controller
         $title = $request->title;
         $count = 1;
         while (LearningFile::where('title', $title)->exists()) {
-             $title = $request->title . " ({$count})";
-             $count++;
+            $title = $request->title." ({$count})";
+            $count++;
         }
 
         LearningFile::create([
@@ -91,11 +91,11 @@ class LearningFileController extends Controller
             abort(403);
         }
 
-        if (!$learningFile->file_path || !Storage::disk('public')->exists($learningFile->file_path)) {
+        if (! $learningFile->file_path || ! Storage::disk('public')->exists($learningFile->file_path)) {
             abort(404);
         }
 
-        return Storage::disk('public')->download($learningFile->file_path, $learningFile->title . '.' . pathinfo($learningFile->file_path, PATHINFO_EXTENSION));
+        return Storage::disk('public')->download($learningFile->file_path, $learningFile->title.'.'.pathinfo($learningFile->file_path, PATHINFO_EXTENSION));
     }
 
     public function update(Request $request, LearningFile $learningFile)
