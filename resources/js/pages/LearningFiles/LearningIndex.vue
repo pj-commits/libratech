@@ -75,7 +75,7 @@ const sortBy = (key: SortKey) => {
 };
 
 const filteredFiles = computed(() => {
-    let result = props.files.filter((file) => {
+    const result = props.files.filter((file) => {
         const matchesSearch = !searchQuery.value ||
             file.title.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
             file.description?.toLowerCase().includes(searchQuery.value.toLowerCase());
