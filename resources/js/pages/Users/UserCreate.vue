@@ -13,9 +13,10 @@ import { Label } from '@/components/ui/label'
 import { Spinner } from '@/components/ui/spinner'
 import AppLayout from '@/layouts/AppLayout.vue'
 import { type BreadcrumbItem } from '@/types'
-import { Head, router, useForm } from '@inertiajs/vue3' // Using useForm for convenience
-import { ref, watchEffect } from 'vue' // update imports
-import { UserPlus } from 'lucide-vue-next';
+import { Head, router, useForm } from '@inertiajs/vue3'
+import { ref, watchEffect } from 'vue'
+import { UserPlus } from 'lucide-vue-next'
+import { toast } from 'vue-sonner';
 
 const firstName = ref('')
 const middleName = ref('')
@@ -63,7 +64,10 @@ watchEffect(() => {
 })
 
 const submit = () => {
-    form.post('/users', {
+    form.transform((data) => ({
+        ...data,
+        email: `${data.email_prefix}@${data.role}.libratech.com`,
+    })).post('/users', {
         onSuccess: () => toast.success('User created successfully'),
         onError: () => toast.error('Check your input')
     })

@@ -62,7 +62,7 @@ class UserController extends Controller
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8',
             'role' => ['required', Rule::in(['student', 'teacher', 'librarian'])],
-            'grade_level' => 'nullable|integer|min:1|max:12', // Basic validation
+            'grade_level' => 'nullable|integer|min:1|max:12', 
         ]);
 
         // Conditional Requirement
